@@ -1,0 +1,56 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Django Blogs</title>
+  <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
+  <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <div class="container">
+    <header class="blog-header py-3">
+      <div class="row flex-nowrap justify-content-between align-items-center">
+        <div class="col-8 pt-1">
+          <a class="blog-header-logo text-dark" href="/">Django Blog</a>
+        </div>
+        <div class="col-4 d-flex justify-content-end align-items-center">
+          <a class="btn btn-sm btn-warning" href="#">Login</a> &nbsp;
+          <a class="btn btn-sm btn-outline-secondary" href="#">Register</a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-fill">
+    <div class="container">
+      <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-md-8 text-center">
+          <h1 class="display-1 fw-bold text-muted">404</h1>
+          <h2 class="mb-3">Page Not Found</h2>
+          <p class="text-muted mb-4">
+            Oops! The page you’re looking for doesn’t exist or has been moved.
+          </p>
+          <a href="/" class="btn btn-dark px-4 py-2">
+            Go back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="blog-footer text-center py-6 mt-auto">
+    <p>Django blog built with ❤️ by <a href="#">Ali Mujahid</a></p>
+  </footer>
+
+</body>
+
+</html>
