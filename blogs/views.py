@@ -1,8 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.template import loader
 from .models import Categories, Blog
 from django.db.models import Q
+from blog_main.forms import RegistrationForm
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import auth
 
 def posts_by_category(request, category_name):
     template = loader.get_template('posts_by_category.html')
@@ -33,3 +36,37 @@ def search(request):
         'keyword': keyword
     }
     return HttpResponse(template.render(context, request))
+
+def register(request):
+    template = loader.get_template("register.html")
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('register')
+    else:
+        form = RegistrationForm()
+    context = {
+        'form' : form
+    }
+    return HttpResponse(template.render(context, request))
+
+def login(request):
+    template = loader.get_template("login.html")
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            user = auth.authenticate(username = form.cleaned_data['username'], password = form.cleaned_data['password'])
+            if user is not None:
+                auth.login(request, user)
+                return redirect('/')
+    else:
+        form = AuthenticationForm()
+    context = {
+        'form' : form
+    }
+    return HttpResponse(template.render(context, request))
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/')

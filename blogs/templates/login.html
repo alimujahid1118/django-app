@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center py-4">
+    <div style="width: 500px;">
+        <h1 class="text-center">Login Form</h1>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            {% load crispy_forms_tags %}
+            {{ form | crispy }}
+            <button type="submit" class="btn btn-warning" style="width: 100%;">Send</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
