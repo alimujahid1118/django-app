@@ -59,7 +59,7 @@ def login(request):
             user = auth.authenticate(username = form.cleaned_data['username'], password = form.cleaned_data['password'])
             if user is not None:
                 auth.login(request, user)
-                return redirect('/')
+                return redirect('dashboard')
     else:
         form = AuthenticationForm()
     context = {
