@@ -1,23 +1,62 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-  <h2>Search Results for "{{ keyword }}"</h2>
- <div class="row mb-2">
-{% for post in search %}
-    <div class="col-md-6">
-      <div class="card border-0" >
-        <div class="card-body">
-          <a href="{% url 'blogs' post.slug %}" class="text-dark">
-            <h3>{{ post.title }}</h3>
-          </a>
-          <small class="mb-1 text-muted">{{ post.created_timestamp|date:"M d, Y" }} | {{ post.author }}</small>
-          <p class="card-text">{{ post.short_description | truncatewords:15 }}</p>
-        </div>
-      </div>
+<div class="container mt-5">
+
+    <!-- Page Heading -->
+    <div class="mb-4">
+        <h2 class="fw-bold">🔍 Search Results for "<span class="text-warning">{{ keyword }}</span>"</h2>
+        <hr>
     </div>
-    {% empty %}
-    <p class="mt-2">No posts found.</p>
- {% endfor %}
-  </div>
+
+    <!-- Search Results Grid -->
+    <div class="row g-4">
+        {% for post in search %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 hover-card">
+
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}"
+                         class="card-img-top"
+                         style="height:200px; object-fit:cover;"
+                         alt="{{ post.title }}">
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+
+                        <!-- Title -->
+                        <h5 class="fw-bold">
+                            <a href="{% url 'blogs' post.slug %}" class="text-dark text-decoration-none">
+                                {{ post.title }}
+                            </a>
+                        </h5>
+
+                        <!-- Meta -->
+                        <small class="text-muted mb-2">
+                            🗓 {{ post.created_timestamp|date:"M d, Y" }} | 👤 {{ post.author }}
+                        </small>
+
+                        <!-- Short Description -->
+                        <p class="text-secondary flex-grow-1">
+                            {{ post.short_description|truncatewords:18 }}
+                        </p>
+
+                        <!-- Read More -->
+                        <span class="fw-semibold mt-auto">
+                            <a href="{% url 'blogs' post.slug %}" class="text-warning text-decoration-none">Read More →</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <h5 class="mb-1">No posts found.</h5>
+                    <p class="mb-0">Try using different keywords.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
 {% endblock %}
