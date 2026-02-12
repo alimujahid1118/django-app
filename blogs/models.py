@@ -44,3 +44,13 @@ class Blog(models.Model):
                 counter +=1
             self.slug = slug
         super().save(*args, **kwargs)
+
+class Comment(models.Model):
+    description = models.TextField(max_length=250)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_timestamp = models.DateTimeField(auto_now_add=True)
+    updated_timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.description

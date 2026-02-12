@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.template import loader
-from .models import Categories, Blog
+from .models import Categories, Blog, Comment
+from about.models import About
+from .forms import CommentForm
 from django.db.models import Q
 from blog_main.forms import RegistrationForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -21,12 +23,28 @@ def posts_by_category(request, category_name):
     return HttpResponse(template.render(context, request))
 
 def blogs(request, slug):
-    template = loader.get_template('blogs.html')
     single_blog = get_object_or_404(Blog, slug=slug, status="Published")
+    comments = Comment.objects.filter(blog=single_blog).order_by('created_timestamp')
+    
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.blog = single_blog
+            comment.user = request.user  # ensure user is logged in
+            comment.save()
+            return redirect('blogs', slug=slug)  # Redirect to the same page after comment
+    else:
+        form = CommentForm()
+
     context = {
-        'single_blog' : single_blog,
+        'single_blog': single_blog,
+        'comments': comments,
+        'form': form,
+        'categories': Categories.objects.all(),  # Sidebar
+        'about': About.objects.first()          # Sidebar
     }
-    return HttpResponse(template.render(context , request))
+    return render(request, 'blogs.html', context)
 
 def search(request):
     keyword = request.GET.get('keyword')

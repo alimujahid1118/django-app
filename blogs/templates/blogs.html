@@ -7,55 +7,146 @@
 
         <!-- Main content -->
         <div class="col-lg-8">
-            <article>
-                <header class="mb-4">
-                    <h1 class="fw-bolder mb-1">{{ single_blog.title }}</h1>
-                    <div class="text-muted fst-italic mb-2">
-                        Posted on {{ single_blog.created_timestamp|date:"M d, Y" }}
-                        by {{ single_blog.author }}
-                    </div>
-                    <a class="badge bg-warning text-decoration-none text-light"
-                       href="{% url 'posts_by_category' single_blog.category.category_name %}">
+
+            <!-- Blog Card -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- Featured Image -->
+                <div class="position-relative">
+                    <img class="img-fluid w-100"
+                         style="max-height: 450px; object-fit: cover;"
+                         src="{{ single_blog.featured_image.url }}" 
+                         alt="{{ single_blog.title }}">
+
+                    <!-- Category Badge Overlay -->
+                    <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark px-3 py-2 rounded-pill shadow">
                         {{ single_blog.category }}
-                    </a>
-                </header>
+                    </span>
+                </div>
 
-                <figure class="mb-4">
-                    <img class="img-fluid rounded"
-                         src="{{ single_blog.featured_image.url }}" alt="">
-                </figure>
+                <div class="card-body p-5">
 
-                <section class="mb-5">
-                    <p><i>"{{ single_blog.short_description }}"</i></p>
-                    <p class="fs-5 mb-4">{{ single_blog.blog_body }}</p>
-                </section>
-            </article>
+                    <!-- Title -->
+                    <h1 class="fw-bold mb-3 display-6">
+                        {{ single_blog.title }}
+                    </h1>
+
+                    <!-- Meta Info -->
+                    <div class="d-flex align-items-center text-muted mb-4">
+                        <div class="me-3">
+                            👤 {{ single_blog.author }}
+                        </div>
+                        <div>
+                            🗓 {{ single_blog.created_timestamp|date:"F d, Y" }}
+                        </div>
+                    </div>
+
+                    <!-- Short Description -->
+                    <p class="lead text-secondary fst-italic border-start border-4 ps-3 mb-4">
+                        "{{ single_blog.short_description }}"
+                    </p>
+
+                    <!-- Blog Body -->
+                    <div class="fs-5 lh-lg text-dark">
+                        {{ single_blog.blog_body }}
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Comment Section -->
+            <div class="card shadow-sm mt-5 rounded-4">
+                <div class="card-body p-4">
+
+                    <h4 class="mb-4 border-bottom pb-2">
+                        💬 Comments ({{ comments|length }})
+                    </h4>
+                    {% if user.is_authenticated %}
+                   <form action="{% url 'blogs' single_blog.slug %}" method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            {{ form }}
+                        </div>
+
+                        <button type="submit" class="btn btn-warning mb-3">
+                            Send
+                        </button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-info text-center fw-semibold">
+                        <h5 class="mb-0">Please <a href="{% url 'login' %}" class="text-decoration-none">log in</a> to write a comment.</h5>
+                    </div>
+                    {% endif %}
+
+                    {% for c in comments %}
+                        <div class="mb-4 p-3 bg-light rounded-3 shadow-sm">
+
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6 class="fw-bold mb-0">
+                                    {{ c.user.username }}
+                                </h6>
+                                <small class="text-muted">
+                                    {{ c.created_at|date:"M d, Y - H:i" }}
+                                </small>
+                            </div>
+
+                            <p class="mb-0">
+                                {{ c }}
+                            </p>
+
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-4">
+                            <p class="mb-1">No comments yet.</p>
+                            <small>Be the first to share your thoughts!</small>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+
         </div>
 
         <!-- Sidebar -->
         <div class="col-lg-4">
 
-            <!-- Categories widget -->
-            <div class="card mb-4 p-3">
-                <h4 class="font-italic">Categories</h4>
-                <ul class="list-unstyled mb-0">
-                    {% for category in categories %}
-                    <li>
-                        <a href="{% url 'posts_by_category' category.category_name %}">
-                            {{ category.category_name }}
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
+            <!-- Categories -->
+            <div class="card shadow-sm mb-4 rounded-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">📂 Categories</h5>
+                    <ul class="list-unstyled mb-0">
+                        {% for category in categories %}
+                            <li class="mb-2">
+                                <a class="text-decoration-none text-dark fw-semibold"
+                                   href="{% url 'posts_by_category' category.category_name %}">
+                                    {{ category.category_name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
 
-            <!-- Follow Us widget -->
-            <div class="card mb-4 p-3">
-                <h4 class="font-italic">Follow Us</h4>
-                <ul class="list-unstyled mb-0">
-                    <li><a href="{{ about.github }}" target="_blank">GitHub</a></li>
-                    <li><a href="{{ about.linkedin }}" target="_blank">LinkedIn</a></li>
-                </ul>
+            <!-- Follow Us -->
+            <div class="card shadow-sm rounded-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">🌍 Follow Us</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <a class="text-decoration-none text-dark"
+                               href="{{ about.github }}" target="_blank">
+                                GitHub
+                            </a>
+                        </li>
+                        <li>
+                            <a class="text-decoration-none text-dark"
+                               href="{{ about.linkedin }}" target="_blank">
+                                LinkedIn
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
         </div>

@@ -2,23 +2,88 @@
 
 {% block content %}
 
-  <h2 class="text-warning">Category - {{ category_name| capfirst }}</h2>
-  <div class="row mb-2">
-{% for post in normal_posts %}
-    <div class="col-md-6">
-      <div class="card border-0" >
-        <div class="card-body">
-          <a href="{% url 'blogs' post.slug %}" class="text-dark">
-            <h3>{{ post.title }}</h3>
-          </a>
-          <small class="mb-1 text-muted">{{ post.created_timestamp|date:"M d, Y" }} | {{ post.author }}</small>
-          <p class="card-text">{{ post.short_description | truncatewords:15 }}</p>
-        </div>
-      </div>
+<div class="container mt-5">
+
+    <!-- Category Header -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold display-6">
+            📂 {{ category_name|capfirst }}
+        </h1>
+        <p class="text-muted">
+            Explore articles in this category
+        </p>
+        <hr class="w-25 mx-auto">
     </div>
-    {% empty %}
-    <p class="mt-2">No posts found.</p>
- {% endfor %}
-  </div>
+
+    <div class="row g-4">
+
+        {% for post in normal_posts %}
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden transition">
+
+                <!-- Featured Image -->
+                {% if post.featured_image %}
+                <img src="{{ post.featured_image.url }}"
+                     class="card-img-top"
+                     style="height:200px; object-fit:cover;"
+                     alt="{{ post.title }}">
+                {% endif %}
+
+                <div class="card-body d-flex flex-column p-4">
+
+                    <!-- Title -->
+                    <h5 class="fw-bold mb-2">
+                        <a href="{% url 'blogs' post.slug %}"
+                           class="text-decoration-none text-dark stretched-link">
+                            {{ post.title }}
+                        </a>
+                    </h5>
+
+                    <!-- Meta -->
+                    <small class="text-muted mb-3">
+                        🗓 {{ post.created_timestamp|date:"M d, Y" }}
+                        &nbsp; | &nbsp;
+                        👤 {{ post.author }}
+                    </small>
+
+                    <!-- Description -->
+                    <p class="text-secondary flex-grow-1">
+                        {{ post.short_description|truncatewords:18 }}
+                    </p>
+
+                    <!-- Read More -->
+                    <div class="mt-auto">
+                        <span class="text-primary fw-semibold">
+                            <a href="{% url 'blogs' post.slug %}" target="_blank">Read More →</a>
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="text-center py-5">
+            <h4 class="text-muted">No posts found</h4>
+            <p class="text-secondary">There are no articles in this category yet.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<style>
+/* Smooth hover effect */
+.card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+</style>
 
 {% endblock %}
