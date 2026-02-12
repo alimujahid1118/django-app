@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    {% include 'sidebar.html' %}
+
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">All Blogs</h3>
+                    <a href="{% url 'add_blog' %}" class="btn btn-dark">Add New</a>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for blog in all_blogs %}
+                    <tr>
+                    <th>{{ blog.id }}</th>
+                    <td>
+                        <a href="{% url 'blogs' blog.slug %}" class="text-dark" target="_blank">{{ blog.title }}</a> &nbsp; 
+                        <a href="{% url 'edit_blog' blog.slug %}" class="text-success"><i class="fi fi-rr-edit"></i></a> &nbsp;
+                        <a href="{% url 'delete_blog' blog.id %}" class="text-danger"><i class="fi fi-rr-trash"></i></a>
+                    </td>
+                    <td>{{ blog.author }}</td>
+                    <td>{{ blog.category }}</td>
+                    <td>{{ blog.status }}</td>
+                    {% if not blog.is_featured %}
+                    <td>
+                        <i class="fi fi-rr-cross-circle text-danger"></i>
+                    </td>
+                    {% endif %}
+                    {% if blog.is_featured %}
+                    <td>
+                        <i class="fi fi-rr-check-circle text-success"></i>
+                    </td>
+                    {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

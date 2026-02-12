@@ -6,6 +6,7 @@ from django.db.models import Q
 from blog_main.forms import RegistrationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import auth
+from django.contrib.auth.models import Group
 
 def posts_by_category(request, category_name):
     template = loader.get_template('posts_by_category.html')
@@ -42,7 +43,11 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.save()
+            group = Group.objects.get(name="Editor")
+            user.groups.add(group)
+            user.save()
             return redirect('register')
     else:
         form = RegistrationForm()
